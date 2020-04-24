@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 
 void participantes() {
     std::cout << std::endl << "=== Taller 01 ===" << std::endl;
-    std::cout << std::endl << "Braulito"; // Reemplazar por su nombre
-    std::cout << std::endl << "Pedrito"; // Reemplazar por su nombre
-    std::cout << std::endl << "Jennifer" << std::endl; // Reemplazar por su nombre
+    std::cout << std::endl << "Braulio Argandoña"; // Reemplazar por su nombre
+    std::cout << std::endl << "Fanny Rivero"; // Reemplazar por su nombre
+    std::cout << std::endl << "Jennifer Portiño" << std::endl; // Reemplazar por su nombre
 }
