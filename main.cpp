@@ -6,7 +6,6 @@ using namespace std;
 
 //Función que muestra los participantes del grupo
 void participantes();
-
 /**
  * Taller computacional
  * @param argc cantidad de argumentos
