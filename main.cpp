@@ -32,5 +32,5 @@ void participantes() {
     std::cout << std::endl << "=== Taller 01 ===" << std::endl;
     std::cout << std::endl << "Braulito"; // Reemplazar por su nombre
     std::cout << std::endl << "Pedrito"; // Reemplazar por su nombre
-    std::cout << std::endl << "Dieguito" << std::endl; // Reemplazar por su nombre
+    std::cout << std::endl << "Jennifer" << std::endl; // Reemplazar por su nombre
 }
