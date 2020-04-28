@@ -5,10 +5,9 @@
 #include <string.h>
 #include <vector>
 
-//Funci�n que muestra los participantes del grupo
-void participantes();
+void participantes();//Funci�n que muestra los participantes del grupo
 void Idempotencia(std::vector<std::string>&, std::string);     //Funcion Idempotencia simplifica p,q o r -> a = p,q o r; hay asignar el valor
-
+void DeMorgan(std::vector<std::string>&);
 /**
  * Taller computacional
  * @param argc cantidad de argumentos
@@ -32,12 +31,12 @@ int main(int argc, char** argv) {
     for(int i=0;i<argList.size();i++){
         std::cout<<argList[i]<<" Posicion: "<<i<<std::endl;
     }
-    Idempotencia(argList, a);                                    //Maravillosa funcion; a puede ser "q", "p" o "r" como str no usar char
+    DeMorgan(argList);
+    Idempotencia(argList, a); //Maravillosa funcion; a puede ser "q", "p" o "r" como str no usar char
     std::cout << std::endl << "=== Modificada ===" << std::endl; //Imprimo lo modificado post idempotencia
     for(int i=0;i<argList.size();i++){
         std::cout<<argList[i]<<" Posicion: "<<i<<std::endl;
     }
-    system("Pause");
     return EXIT_SUCCESS;
 }
 
@@ -97,3 +96,28 @@ void Idempotencia(std::vector<std::string> &argList, std::string a){
         }
     }
 }
+
+void DeMorgan(std::vector<std::string> &argList){
+    std::vector<std::string> aux;
+    std::string negacion="~";
+    std::string parentesis1="(";
+    std::string parentesis2="[";
+
+    for(int i=0;i<argList.size();i++){ //Recorre argList
+        if(std::string(argList[i])=="~"){ //Busca la negacion
+            std::cout << std::endl << "=== Negacion ===" << std::endl; //Imprimo lo modificado post idempotencia
+                if(argList[i+1]==parentesis1){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
+                    aux = argList;
+                    aux[i] = parentesis1;
+                    aux[i+1]=negacion;
+                    argList=aux;
+                }
+                if(argList[i+1]==parentesis2){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
+                    aux = argList;
+                    aux[i] = parentesis2;
+                    aux[i+1]=negacion;
+                    argList=aux;
+                }
+            }
+        }
+    }
