@@ -1,11 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 
-
 using namespace std;
 
-//Función que muestra los participantes del grupo
-void participantes();
+void participantes();//Función que muestra los participantes del grupo
 
 /**
  * Taller computacional
@@ -14,11 +12,6 @@ void participantes();
  * @return El código de salida del programa
  */
 int main(int argc, char** argv) {
-
-    /**
-     * Incluir acá la lógica del programa
-     *
-     */
     if (argc > 1) {
         // @TODO programar proyecto
     } else {
