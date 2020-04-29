@@ -11,6 +11,8 @@ void DeMorgan(std::vector<std::string>&);
 void Conmutativa(std::vector<std::string>&);
 void Simplificar(std::vector<std::string>&, std::string); //Funcion Simplificar simplifica p,q o r -> a = p,q o r; hay asignar el valor
 void Asociativa(std::vector<std::string>&);
+void negacion(std::vector<std::string> &);
+void llamada(std::vector<std::string> &);
 /**
  * Taller computacional
  * @param argc cantidad de argumentos
@@ -19,10 +21,14 @@ void Asociativa(std::vector<std::string>&);
 */
 
 int main(int argc, char** argv) {
-    std::vector<std::string> argList;  // Aqui se almacena lo de argv y aqui voy modificando
+    std::vector<std::string> argList;
     if (argc > 1) {
         for(int i=1;i<argc;i++){
-            argList.push_back(argv[i]);//Agrego uno por uno lo recibido por consola ignorando el argv[0] que es el nombre del programa
+            argList.push_back(argv[i]);
+        }
+        llamada(argList);
+        for(int i=0;i<argList.size();i++){
+            std::cout<<argList[i];
         }
     }
     else {
@@ -38,6 +44,64 @@ void participantes() {
     std::cout << std::endl << "Jennifer Porti\244o" << std::endl;
 }
 
+void llamada(std::vector<std::string> &argList){
+    std::vector<std::string> aux,ant;
+    int c=0;
+    while(ant!=argList){
+
+        ant=aux;
+        Asociativa(argList);
+        Conmutativa(argList);
+        Implicancia(argList);
+        DeMorgan(argList);
+        negacion(argList);
+        Simplificar(argList,"p");
+        Simplificar(argList,"q");
+        Simplificar(argList,"r");
+        aux=argList;
+        c++;
+    }
+}
+
+void negacion(std::vector<std::string> &argList){
+    std::vector<std::string> aux;
+    for(int i=0;i<argList.size();i++){
+        if(std::string(argList[i]) == "~"){
+            int c=i+1;
+            if(std::string(argList[c]) == "("){
+                c++;
+                if(std::string(argList[c]) == "~"){
+                    int j;
+                    for(j=0; j<i; j++){
+                        aux.push_back(argList[j]);
+                    }
+                    int q=0;
+                    c++;
+                    for(int q=c; q<argList.size(); q++){
+                        aux.push_back(argList[q]);
+                    }
+                    argList=aux;
+                    aux.clear();
+                }
+            }else{
+                if(std::string(argList[c]) == "~"){
+                    int j;
+                    for(j=0; j<i; j++){
+                        aux.push_back(argList[j]);
+                    }
+                    int q=0;
+                    c++;
+                    for(int q=c; q<argList.size(); q++){
+                        aux.push_back(argList[q]);
+                    }
+                    argList=aux;
+                    aux.clear();
+                }
+            }
+        }
+    }
+}
+
 void Implicancia(std::vector<std::string> &argList){
     std::vector<std::string> aux;
     std::string letra1;
@@ -46,49 +110,58 @@ void Implicancia(std::vector<std::string> &argList){
     int c=0;
     for(int i=0;i<argList.size();i++)
     {
-        if (std::string(argList[i]) == "~"){
+        if(std::string(argList[i]) == "p" || std::string(argList[i]) == "q" || std::string(argList[i]) == "r"){
             c=i+1;
-            if(std::string(argList[i]) == "p" || std::string(argList[i]) == "q" || std::string(argList[i]) == "r"){
+            letra1=std::string(argList[i]);
+            if (std::string(argList[c]) == "=>")
+                {
                 c+=1;
-                letra1=std::string(argList[i]);
-                if (std::string(argList[c]) == "=>")
-                    {
+                if (std::string(argList[c]) == "p" || std::string(argList[c]) == "q" || std::string(argList[c]) == "r"){
+                    letra2=std::string(argList[c]);
                     c+=1;
-                    if (std::string(argList[c]) == "p" || std::string(argList[c]) == "q" || std::string(argList[c]) == "r"){
-                        letra2=std::string(argList[c]);
-                        c+=1;
-                        int j=0;
-                        for(j=0; j<=i; j++){
-                            aux.push_back(argList[j]);
-                        }
-                        aux.push_back("~");
-                        aux.push_back(letra1);
-                        aux.push_back("||");
-                        aux.push_back(letra2);
-                        int q=0;
-                        c+=1;
-                        for(int q=c; q<argList.size(); q++){
+                    int j=0;
+                    for(j=0; j<i; j++){
+                        aux.push_back(argList[j]);
+                    }
+                    aux.push_back("~");
+                    aux.push_back(letra1);
+                    aux.push_back("||");
+                    aux.push_back(letra2);
+                    int q=0;
+                    for(int q=c; q<argList.size(); q++){
                         aux.push_back(argList[q]);
                         }
-                        argList=aux;
-                        aux.clear();
+                    argList=aux;
+                    aux.clear();
+                }
+                else{
+                    int j=0;
+                    for(j=0; j<i; j++){
+                        aux.push_back(argList[j]);
                     }
+                    aux.push_back("~");
+                    aux.push_back(letra1);
+                    aux.push_back("||");
+                    int q=0;
+                    for(int q=c; q<argList.size(); q++){
+                        aux.push_back(argList[q]);
+                        }
+                    argList=aux;
+                    aux.clear();
                 }
             }
-            else if (std::string(argList[i]) == "("){
-                c+=1;
-                if (std::string(argList[i]) == "p" || std::string(argList[i]) == "q" || std::string(argList[i]) == "r"){
-                    letra1=std::string(argList[i]);
+        }
+        if(std::string(argList[i]) == "("){
+            c=i+1;
+            if (std::string(argList[c]) == "p" || std::string(argList[c]) == "q" || std::string(argList[c]) == "r"){
+                    letra1=std::string(argList[c]);
                     c+=1;
-                    if (std::string(argList[i]) == "=>"){
+                    if (std::string(argList[c]) == "=>"){
                         c+=1;
-                        if (std::string(argList[i]) == "=>"){
+                        if (std::string(argList[c]) == "p" || std::string(argList[c]) == "q" || std::string(argList[c]) == "r"){
+                            letra2=std::string(argList[c]);
                             c+=1;
-                            if (std::string(argList[i]) == "p" || std::string(argList[i]) == "q" || std::string(argList[i]) == "r"){
-                                letra2=std::string(argList[i]);
-                                c+=1;
-                                if (std::string(argList[i]) == ")"){
-                                    c+=1;
+                                if (std::string(argList[c]) == ")"){
                                     for(int j=0; j<=i; j++){
                                         aux.push_back(argList[j]);
                                     }
@@ -97,53 +170,53 @@ void Implicancia(std::vector<std::string> &argList){
                                     aux.push_back("||");
                                     aux.push_back(letra2);
                                     int q=0;
-                                    c+=1;
                                     for(int q=c; q<argList.size(); q++)
                                     {
-                                    aux.push_back(argList[q]);
+                                        aux.push_back(argList[q]);
                                     }
                                     argList=aux;
                                     aux.clear();
                                 }
                             }
                         }
+                    }
                 }
-            }
-
-        else if (std::string(argList[i]) == "p" || std::string(argList[i]) == "q" || std::string(argList[i]) == "r")
-        {
-            letra1=std::string(argList[i]);
-            c=i+1;
-            if(std::string(argList[i]) == "&&" ){
-                c+=1;
-                if(std::string(argList[i]) == "(" ){
-                    c+=1;
-                    if(std::string(argList[i]) == "p" || std::string(argList[i]) == "q" || std::string(argList[i]) == "r"){
-                        letra2=std::string(argList[i]);
-                        c+=1;
-                        if(std::string(argList[i]) == "=>" ){
-                            c+=1;
-                            if (std::string(argList[i]) == "p" || std::string(argList[i]) == "q" || std::string(argList[i]) == "r"){
-                                letra3=std::string(argList[i]);
-                                c+=1;
-                                 if(std::string(argList[i]) == "(" )
-                                {
-                                    c+=1;
-                                    for(int j=0; j<=i; j++){
+        else{
+            if(std::string(argList[i]) == "["){
+                c=i+1;
+                if (std::string(argList[c]) == "p" || std::string(argList[c]) == "q" || std::string(argList[c]) == "r"){
+                letra1=std::string(argList[c]);
+                c++;
+                if(std::string(argList[c]) == "&&" ){
+                    c++;
+                    if(std::string(argList[c]) == "(" ){
+                        c++;
+                        if(std::string(argList[c]) == "p" || std::string(argList[c]) == "q" || std::string(argList[c]) == "r"){
+                            letra2=std::string(argList[c]);
+                            c++;
+                            if(std::string(argList[c]) == "=>" ){
+                                c++;
+                                if (std::string(argList[c]) == "p" || std::string(argList[c]) == "q" || std::string(argList[c]) == "r"){
+                                    letra3=std::string(argList[c]);
+                                    c++;
+                                    if(std::string(argList[c]) == ")" ){
+                                        for(int j=0; j<i; j++){
                                         aux.push_back(argList[j]);
-                                    }
-                                    aux.push_back("(");
-                                    aux.push_back(letra1);
-                                    aux.push_back("&&");
-                                    aux.push_back(letra2);
-                                    int q=0;
-                                    c+=1;
-                                    for(int q=c; q<argList.size(); q++)
-                                    {
-                                    aux.push_back(argList[q]);
-                                    }
-                                    argList=aux;
-                                    aux.clear();
+                                        }
+                                        aux.push_back("(");
+                                        aux.push_back(letra1);
+                                        aux.push_back("&&");
+                                        aux.push_back(letra2);
+                                        aux.push_back(")");
+                                        int q=0;
+                                        c+=2;
+                                        for(int q=c; q<argList.size(); q++)
+                                        {
+                                        aux.push_back(argList[q]);
+                                        }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
                                     }
                                 }
                             }
@@ -154,7 +227,7 @@ void Implicancia(std::vector<std::string> &argList){
         }
     }
 }
-}
+
 
 void DeMorgan(std::vector<std::string> &argList){
     std::vector<std::string> aux;
@@ -166,17 +239,17 @@ void DeMorgan(std::vector<std::string> &argList){
                     aux[i+1]= "~";
                     argList=aux;
                     for(int j=i;j<aux.size();j++){//recorre el auxiliar
-                            if(std::string(aux[j])=="&"){//si encuentra un & lo cambia por |
-                                argList[j]= "|";
+                            if(std::string(aux[j])=="&&"){//si encuentra un & lo cambia por |
                                 //Si despues del & hay una letra p, q o r, agrega el ~ correspondiente
                                 if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
                                     argList.insert(argList.begin()+j+1,"~"); //Agrega al vector en la posicion argList.begin()+j+1 el argumento "~"
+                                    argList[j]= "||";
                                 }
                             }
-                            if(std::string(aux[j])=="|"){//si encuentra un | lo cambia por &
-                                argList[j]= "&";
+                            if(std::string(aux[j])=="||"){//si encuentra un | lo cambia por &
                                 if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
                                     argList.insert(argList.begin()+j+1,"~");
+                                    argList[j]= "&&";
                                 }
                             }
                     }
@@ -188,14 +261,14 @@ void DeMorgan(std::vector<std::string> &argList){
                     aux[i+1]="~";
                     argList=aux;
                     for(int j=i;j<aux.size();j++){
-                            if(std::string(aux[j])=="&"){
-                                argList[j]= "|";
+                            if(std::string(aux[j])=="&&"){
+                                argList[j]= "||";
                                 if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
                                     argList.insert(argList.begin()+j+1,"~");
                                 }
                             }
-                            if(std::string(aux[j])=="|"){
-                                argList[j]= "&";
+                            if(std::string(aux[j])=="||"){
+                                argList[j]= "&&";
                                 if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
                                     argList.insert(argList.begin()+j+1,"~");
                                 }
@@ -208,36 +281,42 @@ void DeMorgan(std::vector<std::string> &argList){
 
 void Conmutativa(std::vector<std::string> &argList){
     std::vector<std::string> aux;
+    std::vector<std::string> uno,dos;
     for(int i=0;i<argList.size();i++){
-        if(std::string(argList[i])=="p"){
-            if(i+3 < argList.size()){
+        if(std::string(argList[i])=="p"||std::string(argList[i])=="q"||std::string(argList[i])=="r"){
+            uno.push_back(argList[i]);
+            if(std::string(argList[i+2])=="p"||std::string(argList[i+2])=="q"||std::string(argList[i+2])=="r"){
+                dos.push_back(argList[i+2]);
+                if(i+2 < argList.size()){
                 aux=argList;
-                aux[i] = aux[i+3];
-                aux[i+3]= "p";
+                aux[i] = dos[0];
+                aux[i+2]= uno[0];
                 argList=aux;
                 aux.clear();
+                }
             }
-        }
-        if(std::string(argList[i])=="q"){
-            if(i+3 < argList.size()){
-                aux=argList;
-                aux[i] = argList[i+3];
-                aux[i+3]= "q";
-                argList=aux;
-                aux.clear();
-            }
-        }
-        if(std::string(argList[i])=="r"){
-            if(i+3 < argList.size()){
-                aux=argList;
-                aux[i] = argList[i+3];
-                aux[i+3]= "r";
-                argList=aux;
-                aux.clear();
+        }else{
+            if(std::string(argList[i])=="~"){ //~p&&~q = ~q&&~p
+                if(std::string(argList[i+1])=="p"||std::string(argList[i+1])=="q"||std::string(argList[i+1])=="r"){
+                    uno.push_back(argList[i+1]);
+                    if(std::string(argList[i+3])=="~"){
+                        if(std::string(argList[i+4])=="p"||std::string(argList[i+4])=="q"||std::string(argList[i+4])=="r"){
+                            dos.push_back(argList[i+4]);
+                            if(i+3< argList.size()){
+                                aux=argList;
+                                aux[i+1] = dos[0];
+                                aux[i+4]=uno[0];
+                                argList=aux;
+                                aux.clear();
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
+
 void Simplificar(std::vector<std::string> &argList, std::string a){
     std::vector<std::string> aux;
     int c;
@@ -276,7 +355,7 @@ void Simplificar(std::vector<std::string> &argList, std::string a){
                         if(std::string(argList[c]) == a){          //VERIFICA SI SIGUE LA ESTRUCTURA P&&~P / P||~P...
                             if(std::string(argList[c-2]) == "&&"){ //VERIFICA SI SIGUE LA ESTRUCTURA P&&~P...
                                 int j=0;
-                                if(std::string(argList[c-4]) == "("){ //VERIFICA SI SIGUE LA ESTRUCTURA (P&&~P...
+                                if(std::string(argList[c-4]) == "("||std::string(argList[c-4]) == "["){ //VERIFICA SI SIGUE LA ESTRUCTURA (P&&~P...
                                      for(j; j<i-1; j++){
                                          aux.push_back(argList[j]);   //AGREGA TODO LO ANTERIOR AL PARENTESIS
                                      }
@@ -286,7 +365,7 @@ void Simplificar(std::vector<std::string> &argList, std::string a){
                                      }
                                 }
                                 aux.push_back("F");                  //AGREGA LA EXPRESION SIMPLIFICADA DE P&&~P
-                                if(std::string(argList[c+1]) == ")"){  //VERIFICA SI SIGUE LA ESTRUCTURA (P&&~P)
+                                if(std::string(argList[c+1]) == ")"||std::string(argList[c+1]) == "]"){  //VERIFICA SI SIGUE LA ESTRUCTURA (P&&~P)
                                      for(int q=c+2;q<argList.size();q++){
                                          aux.push_back(argList[q]);  //AGREGA TODO LO POSTERIOR AL PARENTESIS
                                      }
@@ -299,7 +378,7 @@ void Simplificar(std::vector<std::string> &argList, std::string a){
                                 aux.clear();                           //SE LIMPIA AUX
                             }else{                                     //VERIFICA SI SIGUE LA ESTRUCTURA P||~P...
                                 int j=0;
-                                if(std::string(argList[c-4]) == "("){ //VERIFICA SI SIGUE LA ESTRUCTURA (P||~P...
+                                if(std::string(argList[c-4]) == "("||std::string(argList[c+1]) == "["){ //VERIFICA SI SIGUE LA ESTRUCTURA (P||~P...
                                      for(j; j<i-1; j++){
                                          aux.push_back(argList[j]);   //AGREGA TODO LO ANTERIOR AL PARENTESIS
                                      }
@@ -309,7 +388,7 @@ void Simplificar(std::vector<std::string> &argList, std::string a){
                                      }
                                 }
                                 aux.push_back("V");                  //AGREGA LA EXPRESION SIMPLIFICADA DE P||~P
-                                if(std::string(argList[c+1]) == ")"){  //VERIFICA SI SIGUE LA ESTRUCTURA (P||~P)
+                                if(std::string(argList[c+1]) == ")"||std::string(argList[c+1]) == "]"){  //VERIFICA SI SIGUE LA ESTRUCTURA (P||~P)
                                      for(int q=c+2;q<argList.size();q++){
                                          aux.push_back(argList[q]);  //AGREGA TODO LO POSTERIOR AL PARENTESIS
                                      }
@@ -418,7 +497,6 @@ void Simplificar(std::vector<std::string> &argList, std::string a){
         }
     }
 }
-
 
 void Asociativa(std::vector<std::string> &argList){
     std::vector<std::string> aux;
