@@ -18,7 +18,9 @@ void Asociativa(std::vector<std::string>&);
 
 int main(int argc, char** argv) {
     std::vector<std::string> argList;  // Aqui se almacena lo de argv y aqui voy modificando
-    std::string a="p";                 // Variable para comparar en idempotencia, fue de ejemplo
+    std::string p="p";                 // Variable para comparar en idempotencia, fue de ejemplo
+    std::string q="q";
+    std::string r="q";
     if (argc > 1) {
         for(int i=1;i<argc;i++){
             argList.push_back(argv[i]);     //Agrego uno por uno lo recibido por consola ignorando el argv[0] que es el nombre del programa
@@ -29,25 +31,19 @@ int main(int argc, char** argv) {
         participantes();
         }
 
-    Asociativa (argList);
-    std::cout << std::endl << "=== Modificada ===" << std::endl; //Imprimo lo modificado post idempotencia
-    for(int i=0;i<argList.size();i++){
-        std::cout<<argList[i]<<" Posicion: "<<i<<std::endl;
-    }
     std::cout << std::endl << "=== Original ===" << std::endl;  //Imprimo lo ingresado inicialmente
     for(int i=0;i<argList.size();i++){
         std::cout<<argList[i];
     }
-    DeMorgan(argList);
-    Simplificar(argList, a);
+    Simplificar(argList, p);
+    Asociativa (argList);
     std::cout<<std::endl;
     std::cout << std::endl << "=== Modificada ===" << std::endl;
     for(int i=0;i<argList.size();i++){
         std::cout<<argList[i];
     }
     system("Pause");
-    std::cout << std::endl
-    Simplificar(argList, a); //PROBAR CON main ( ~ p ^&^& ~ p ) ( ~ p ^|^| ~ p ) ( p ^&^& p ) ( p ^|^| p ) ( ~ p ^&^& p ) ( p ^&^& ~ p ) ( ~ p ^|^| p ) ( p ^|^| ~ p )
+    std::cout << std::endl; //PROBAR CON main ( ~ p ^&^& ~ p ) ( ~ p ^|^| ~ p ) ( p ^&^& p ) ( p ^|^| p ) ( ~ p ^&^& p ) ( p ^&^& ~ p ) ( ~ p ^|^| p ) ( p ^|^| ~ p )
     return EXIT_SUCCESS;
 }
 
@@ -57,8 +53,6 @@ void participantes() {
     std::cout << std::endl << "Fanny Rivero";
     std::cout << std::endl << "Jennifer Porti�o" << std::endl;
 }
-void Asociativa(std::vector<std::string> &argList)
-{
 
 void Simplificar(std::vector<std::string> &argList, std::string a){
     std::vector<std::string> aux;
@@ -241,506 +235,1207 @@ void Simplificar(std::vector<std::string> &argList, std::string a){
     }
 }
 
-void DeMorgan(std::vector<std::string> &argList){
-    std::vector<std::string> aux;
 
+void Asociativa(std::vector<std::string> &argList){
+    std::vector<std::string> aux;
+    std::vector<std::string> uno,dos,tres;
+    int c;
     for(int i=0;i<argList.size();i++){ //Recorre argList
-        if(std::string(argList[i])=="~" && std::string(argList[i+5])!= std::string(argList[i+2])){ //Busca la condicion DeMorgan ~(p&&q)
-                if(std::string(argList[i+1])=="("){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
-                    aux = argList;
-                    aux[i] = "(";
-                    aux[i+1]= "~";
-                    argList=aux;
-                    aux.clear();
-                    for(int j=0;j<argList.size();i++){
-                            if(std::string(argList[j])=="&"){
-                                aux[j]= "|";
-                            }
-                            if(std::string(argList[j])=="|"){
-                                aux[j]= "&";
-                            }
-                            else{
-                                aux[j]=argList[j];
-                            }
-
-                    }
-                        /**if(std::string(argList[i+3]) == "&"){
-                            std::cout << std::endl << "=== Cambio logico ===" << std::endl;
-                            aux = argList;
-                            aux[i+3] = "|";
-                            aux[i+4] = "|";
-                            argList=aux;
-                            aux.clear();
-                        }
-                        if(std::string(argList[i+3]) == "|"){
-                            aux = argList;
-                            aux[i+3] = "&";
-                            aux[i+4] = "&";
-                            argList=aux;
-                            aux.clear();
-                        }**/
-                }
-                if(std::string(argList[i+1])=="["){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
-                    aux = argList;
-                    aux[i] = "[";
-                    aux[i+1]="~";
-                    argList=aux;
-                    aux.clear();
-                }
-            }
-        }
-    }
-
-    std::vector<std::string> aux;
-    for(int i=0;i<argList.size();i++)
-    { //Recorre argList
-        if(std::string(argList[i])== "["){ //Busca el corchete
-            int c=i+1;
+        if (std::string(argList[i]) == "["){
+            c=i+1;
             if (std::string(argList[c]) == "("){
-                c+=1;
-                if (std::string(argList[c]) == "p" ){
-                    c+=1;
-                    if (std::string(argList[c]) == "&&"){
-                        c+=1;
-                        if (std::string(argList[c]) == "q"){
-                            c+=1;
+                c++;
+                if (std::string(argList[c]) == "~"){
+                    c+=2;
+                    if (std::string(argList[c]) == "&&"){ // && positivo
+                        uno.push_back(argList[c-2]);
+                        uno.push_back(argList[c-1]);
+                        c++;
+                        if (std::string(argList[c]) == "~"){
+                            dos.push_back(argList[c]);
+                            dos.push_back(argList[c+1]);
+                            c+=2;
                             if (std::string(argList[c]) == ")"){
-                                c+=1;
+                                c++;
                                 if (std::string(argList[c]) == "&&"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "r"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
-                                        }
-                                        aux.push_back(" [");
-                                        aux.push_back(" p");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" (");
-                                        aux.push_back(" q");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" r");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
-                                        argList=aux;
-                                        aux.clear();
-                                        }
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X&&~X)&&~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
                                     }
-                                }
-                            }
-                        }
-                    }
-                    else if (std::string(argList[c]) == "r"){
-                        c+=1;
-                        if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "&&"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "q"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]")
-                                        {
-                                                for(int j= 0; j<=i; j++)
-                                                {
-                                                    aux.push_back(argList[j]);
-                                                }
-                                                aux.push_back(" [");
-                                                aux.push_back(" p");
-                                                aux.push_back(" &&");
-                                                aux.push_back(" (");
-                                                aux.push_back(" r");
-                                                aux.push_back(" &&");
-                                                aux.push_back(" q");
-                                                aux.push_back(" )");
-                                                aux.push_back(" ]");
-                                                int q=0;
-                                                c+=1;
-                                                for(int q=c; q<argList.size(); q++){
-                                                    aux.push_back(argList[q]);
-                                                }
-                                                argList=aux;
-                                                aux.clear();
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back("(");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                    aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            if (std::string(argList[c]) == "q" )
-            {
-                    c+=1;
-                    if (std::string(argList[c]) == "&&"){
-                        c+=1;
-                        if (std::string(argList[c]) == "p"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "&&"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "r"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{                               //[(~X&&~X)&&X]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" q");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" (");
-                                        aux.push_back(" p");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" r");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
+                                        aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back("(");aux.push_back(dos[0]);
+                                        aux.push_back(dos[1]);aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
                                     }
-                                }
-                            }
-                        }
-                    }
-                    }
-                    if (std::string(argList[c]) == "r"){
-                        c+=1;
-                        if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "&&"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "p"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
-                                        }
-                                        aux.push_back(" [");
-                                        aux.push_back(" q");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" (");
-                                        aux.push_back(" r");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" p");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
-                                        argList=aux;
-                                        aux.clear();
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X&&~X)||~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
                                     }
-                                }
-                            }
-                        }
-                    }
-               }
-            if (std::string(argList[c]) == "r" ){
-                c=c+1;
-                if (std::string(argList[c]) == "&&"){
-                        c+=1;
-                        if (std::string(argList[c]) == "p"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "&&"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "q"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
-                                        }
-                                        aux.push_back(" [");
-                                        aux.push_back(" r");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" (");
-                                        aux.push_back(" p");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" q");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
-                                        argList=aux;
-                                        aux.clear();
-                                        }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
+                                    aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
 
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(~X&&~X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");
+                                    aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
+
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
                                     }
                                 }
                             }
-                        }
-                    if (std::string(argList[c]) == "q"){
-                            c+=1;
+                        }else{
+                            dos.push_back(argList[c]);
+                            c++;
                             if (std::string(argList[c]) == ")"){
-                                c+=1;
+                                c++;
                                 if (std::string(argList[c]) == "&&"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "p"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X&&~X)&&~X]
+                                    tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back("(");
+                                    aux.push_back(dos[0]);aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" r");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" (");
-                                        aux.push_back(" q");
-                                        aux.push_back(" &&");
-                                        aux.push_back(" p");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
+                                        aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back("(");aux.push_back(dos[0]);
+                                        aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X&&X)||~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
+                                    aux.push_back(dos[0]);aux.push_back(")");
+
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(~X&&X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(")");
+
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }
+                                }
+                            }
+
+                        }
+                    }else{ //[(~ ||
+                        uno.push_back(argList[c-2]);
+                        uno.push_back(argList[c-1]);
+                        c++;
+                        if (std::string(argList[c]) == "~"){
+                            dos.push_back(argList[c]);
+                            dos.push_back(argList[c+1]);
+                            c+=2;
+                            if (std::string(argList[c]) == ")"){
+                                c++;
+                                if (std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X||~X)&&~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("||");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");
+                                    aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{                               //[(~X||~X)&&X]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");
+                                        aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("||");
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");
+                                        aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X||~X)||~X]
+                                    tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back("(");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                    aux.push_back("||");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(~X||~X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back("(");aux.push_back(dos[0]);
+                                    aux.push_back(dos[1]);aux.push_back("||");aux.push_back(tres[0]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }
+                                }
+                            }
+                        }else{
+                            dos.push_back(argList[c]);
+                            c++;
+                            if (std::string(argList[c]) == ")"){
+                                c++;
+                                if (std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X||X)&&~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("||");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");
+                                    aux.push_back(dos[0]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{              //[(~X||X)&&X]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");
+                                        aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("||");
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");
+                                        aux.push_back(dos[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(~X||X)||~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
+                                    aux.push_back("(");aux.push_back(dos[0]);aux.push_back("||");
+                                    aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(~X||X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
+                                    aux.push_back("(");aux.push_back(dos[0]);aux.push_back("||");
+                                    aux.push_back(tres[0]);aux.push_back(")");
+
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }else{ //de aqui para abajo la primera x es positiva
+                    c++;
+                    if (std::string(argList[c]) == "&&"){ // && positivo
+                        uno.push_back(argList[c-1]);
+                        c++;
+                        if (std::string(argList[c]) == "~"){
+                            dos.push_back(argList[c]);
+                            dos.push_back(argList[c+1]);
+                            c+=2;
+                            if (std::string(argList[c]) == ")"){
+                                c++;
+                                if (std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X&&~X)&&~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back("&&");aux.push_back("(");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                    aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back(uno[0]);aux.push_back("&&");aux.push_back("(");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X&&~X)||~X]
+                                    tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
+                                    aux.push_back(uno[0]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
+                                    aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
+
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(X&&~X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");
+                                    aux.push_back(uno[0]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");
+                                    aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }
+                                }
+                            }
+                        }else{
+                            dos.push_back(argList[c]);
+                            c++;
+                            if (std::string(argList[c]) == ")"){
+                                c++;
+                                if (std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X&&X)&&~X]
+                                    tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back("&&");aux.push_back("(");aux.push_back(dos[0]);
+                                    aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back(uno[0]);aux.push_back("&&");aux.push_back("(");
+                                        aux.push_back(dos[0]);aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X&&X)||~X]
+                                    tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");aux.push_back(uno[0]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(X&&X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");aux.push_back(uno[0]);aux.push_back(")");aux.push_back("&&");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }
+                                }
+                            }
+                        }
+                    }else{ // [(X||
+                        uno.push_back(argList[c-1]);
+                        c++;
+                        if (std::string(argList[c]) == "~"){
+                            dos.push_back(argList[c]);dos.push_back(argList[c+1]);
+                            c+=2;
+                            if (std::string(argList[c]) == ")"){
+                                c++;
+                                if (std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X||~X)&&~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");aux.push_back(uno[0]);aux.push_back(")");aux.push_back("||");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");aux.push_back(uno[0]);aux.push_back(")");aux.push_back("||");
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X||~X)||~X]
+                                    tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back("||");aux.push_back("(");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                    aux.push_back("||");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(X||~X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back("||");aux.push_back("(");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                    aux.push_back("||");aux.push_back(tres[0]);aux.push_back(")");
+
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }
+                                }
+                            }
+                        }else{
+                            dos.push_back(argList[c]);
+                            c++;
+                            if (std::string(argList[c]) == ")"){
+                                c++;
+                                if (std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X||X)&&~X]
+                                    tres.push_back(argList[c]);
+                                    tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");aux.push_back(uno[0]);aux.push_back(")");aux.push_back("||");
+                                    aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(X||X)&&X]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");aux.push_back(uno[0]);aux.push_back(")");aux.push_back("||");
+                                        aux.push_back("(");aux.push_back(tres[0]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if (std::string(argList[c]) == "~"){ //[(X||X)||~X]
+                                    tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back("||");aux.push_back("(");aux.push_back(dos[0]);
+                                    aux.push_back("||");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
+                                    }else{ //[(~X||~X)||X]
+                                    tres.push_back(argList[c]);
+                                    int j=0;
+                                    for(j;j<i;j++){
+                                        aux.push_back(argList[j]);
+                                    }
+                                    aux.push_back(uno[0]);aux.push_back("||");aux.push_back("(");aux.push_back(dos[0]);
+                                    aux.push_back("||");aux.push_back(tres[0]);aux.push_back(")");
+                                    for(int k=c+3;k<argList.size();k++){
+                                        aux.push_back(argList[k]);
+                                    }
+                                    argList=aux;
+                                    uno.clear();dos.clear();tres.clear();
+                                    aux.clear();
                                     }
                                 }
                             }
                         }
                     }
                 }
-            if (std::string(argList[c]) == "p" ){
-                    c+=1;
-                    if (std::string(argList[c]) == "||"){
-                        c+=1;
-                        if (std::string(argList[c]) == "q"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "||"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "r"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+            }else{
+                if (std::string(argList[c]) == "~"){
+                    uno.push_back(argList[c]);uno.push_back(argList[c+1]);
+                    c+=2;
+                    if(std::string(argList[c]) == "&&"){
+                        c++;
+                        if(std::string(argList[c]) == "("){
+                            c++;
+                            if(std::string(argList[c]) == "~"){
+                                dos.push_back(argList[c]);dos.push_back(argList[c+1]);
+                                c+=2;
+                                if(std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" p");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" (");
-                                        aux.push_back(" q");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" r");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{//[~X&&(~X||
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){//[~X&&(~X||~X
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }//[~X&&(~X||X)]
+                                }//[~X&&(~X||
+                            }else{
+                                dos.push_back(argList[c]);
+                                c++;
+                                if(std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{//[~X&&(~X||
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){//[~X&&(~X||~X
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
                                     }
                                 }
                             }
                         }
-                    if (std::string(argList[c]) == "r"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "||"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "q"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                    }else{
+                        c++;
+                        if(std::string(argList[c]) == "("){
+                            c++;
+                            if(std::string(argList[c]) == "~"){
+                                dos.push_back(argList[c]);dos.push_back(argList[c+1]);
+                                c+=2;
+                                if(std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){ //[~X||(~X&&~X)]
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" p");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" (");
-                                        aux.push_back(" r");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" q");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
+                                    }else{    //[~X||(~X&&X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{ //[~X||(~X||
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){ //[~X||(~X||~X)]
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(dos[1]);aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+4;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{    //[~X||(~X|| X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(dos[1]);aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }
+                            }else{
+                                dos.push_back(argList[c]);
+                                c++;
+                                if(std::string(argList[c]) == "&&"){ //[~X ||(X && ~X)]
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{              //[ ~X ||( X && X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){ //[ ~X ||( X || ~X)]
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{                            //[ ~X ||( X || X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
                                     }
                                 }
                             }
                         }
                     }
-                 if (std::string(argList[c]) == "q" ){
-                    c+=1;
-                    if (std::string(argList[c]) == "||"){
-                        c+=1;
-                        if (std::string(argList[c]) == "p"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "||"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "r"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                }else{
+                    uno.push_back(argList[c]);
+                    c++;
+                    if(std::string(argList[c]) == "&&"){
+                        c++;
+                        if(std::string(argList[c]) == "("){
+                            c++;
+                            if(std::string(argList[c]) == "~"){
+                                dos.push_back(argList[c]);dos.push_back(argList[c+1]);
+                                c+=2;
+                                if(std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" q");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" (");
-                                        aux.push_back(" p");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" r");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{//[~X&&(~X||
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){//[~X&&(~X||~X
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }//[~X&&(~X||X)]
+                                }//[~X&&(~X||
+                            }else{
+                                dos.push_back(argList[c]);
+                                c++;
+                                if(std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{//[~X&&(~X||
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){//[~X&&(~X||~X
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("&&");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
                                     }
                                 }
                             }
                         }
-                        if (std::string(argList[c]) == "r"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "||"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "p"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                    }else{
+                        c++;
+                        if(std::string(argList[c]) == "("){
+                            c++;
+                            if(std::string(argList[c]) == "~"){
+                                dos.push_back(argList[c]);dos.push_back(argList[c+1]);
+                                c+=2;
+                                if(std::string(argList[c]) == "&&"){
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){ //[~X||(~X&&~X)]
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" q");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" (");
-                                        aux.push_back(" r");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" p");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
+                                    }else{    //[~X||(~X&&X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(dos[1]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }
+                                }else{ //[~X||(~X||
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){ //[~X||(~X||~X)]
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(dos[1]);aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+4;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{    //[~X||(~X|| X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(dos[1]);aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
-                if (std::string(argList[c]) == "r" ){
-                    c+=1;
-                    if (std::string(argList[c]) == "||"){
-                        c+=1;
-                        if (std::string(argList[c]) == "p"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "||"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "q"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                            }else{
+                                dos.push_back(argList[c]);
+                                c++;
+                                if(std::string(argList[c]) == "&&"){ //[~X ||(X && ~X)]
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" r");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" (");
-                                        aux.push_back(" p");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" q");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
+                                    }else{              //[ ~X ||( X && X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                    }
-                                }
-                            }
-                        if (std::string(argList[c]) == "||"){
-                        c+=1;
-                        if (std::string(argList[c]) == "q"){
-                            c+=1;
-                            if (std::string(argList[c]) == ")"){
-                                c+=1;
-                                if (std::string(argList[c]) == "||"){
-                                    c+=1;
-                                    if (std::string(argList[c]) == "p"){
-                                        c+=1;
-                                        if (std::string(argList[c]) == "]"){
-                                        for(int j= 0; j<=i; j++)
-                                        {
-                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("&&");aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");
+                                        aux.push_back(tres[0]);aux.push_back(")");
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
                                         }
-                                        aux.push_back(" [");
-                                        aux.push_back(" r");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" (");
-                                        aux.push_back(" q");
-                                        aux.push_back(" ||");
-                                        aux.push_back(" p");
-                                        aux.push_back(" )");
-                                        aux.push_back(" ]");
-                                        int q=0;
-                                        c+=1;
-                                        for(int q=c; q<argList.size(); q++){
-                                            aux.push_back(argList[q]);
-                                            }
                                         argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
                                         aux.clear();
+                                    }
+                                }else{
+                                    c++;
+                                    if(std::string(argList[c]) == "~"){ //[ ~X ||( X || ~X)]
+                                        tres.push_back(argList[c]);tres.push_back(argList[c+1]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
                                         }
-                                    }
-                                    }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);aux.push_back(tres[1]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
+                                    }else{                            //[ ~X ||( X || X)]
+                                        tres.push_back(argList[c]);
+                                        int j=0;
+                                        for(j;j<i;j++){
+                                            aux.push_back(argList[j]);
+                                        }
+                                        aux.push_back("(");aux.push_back(uno[0]);aux.push_back("||");aux.push_back(dos[0]);
+                                        aux.push_back(")");aux.push_back("||");aux.push_back(tres[0]);
+                                        for(int k=c+3;k<argList.size();k++){
+                                            aux.push_back(argList[k]);
+                                        }
+                                        argList=aux;
+                                        uno.clear();dos.clear();tres.clear();
+                                        aux.clear();
                                     }
                                 }
                             }
@@ -750,5 +1445,4 @@ void DeMorgan(std::vector<std::string> &argList){
             }
         }
     }
-}
 }
