@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1587860766 source:c:\users\braul\desktop\ada\taller\main.cpp
+	<iostream>
+	<cstdlib>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<iostream>
+
