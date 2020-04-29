@@ -99,24 +99,49 @@ void Idempotencia(std::vector<std::string> &argList, std::string a){
 
 void DeMorgan(std::vector<std::string> &argList){
     std::vector<std::string> aux;
-    std::string negacion="~";
-    std::string parentesis1="(";
-    std::string parentesis2="[";
 
     for(int i=0;i<argList.size();i++){ //Recorre argList
-        if(std::string(argList[i])=="~"){ //Busca la negacion
-            std::cout << std::endl << "=== Negacion ===" << std::endl; //Imprimo lo modificado post idempotencia
-                if(argList[i+1]==parentesis1){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
+        if(std::string(argList[i])=="~" && std::string(argList[i+5])!= std::string(argList[i+2])){ //Busca la condicion DeMorgan ~(p&&q)
+                if(std::string(argList[i+1])=="("){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
                     aux = argList;
-                    aux[i] = parentesis1;
-                    aux[i+1]=negacion;
+                    aux[i] = "(";
+                    aux[i+1]= "~";
                     argList=aux;
+                    aux.clear();
+                    for(int j=0;j<argList.size();i++){
+                            if(std::string(argList[j])=="&"){
+                                aux[j]= "|";
+                            }
+                            if(std::string(argList[j])=="|"){
+                                aux[j]= "&";
+                            }
+                            else{
+                                aux[j]=argList[j];
+                            }
+
+                    }
+                        /**if(std::string(argList[i+3]) == "&"){
+                            std::cout << std::endl << "=== Cambio logico ===" << std::endl;
+                            aux = argList;
+                            aux[i+3] = "|";
+                            aux[i+4] = "|";
+                            argList=aux;
+                            aux.clear();
+                        }
+                        if(std::string(argList[i+3]) == "|"){
+                            aux = argList;
+                            aux[i+3] = "&";
+                            aux[i+4] = "&";
+                            argList=aux;
+                            aux.clear();
+                        }**/
                 }
-                if(argList[i+1]==parentesis2){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
+                if(std::string(argList[i+1])=="["){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
                     aux = argList;
-                    aux[i] = parentesis2;
-                    aux[i+1]=negacion;
+                    aux[i] = "[";
+                    aux[i+1]="~";
                     argList=aux;
+                    aux.clear();
                 }
             }
         }
