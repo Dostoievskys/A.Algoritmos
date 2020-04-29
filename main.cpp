@@ -5,15 +5,14 @@
 #include <string.h>
 #include <vector>
 
-//Función que muestra los participantes del grupo
-void participantes();
+void participantes();//Funciï¿½n que muestra los participantes del grupo
 void Simplificar(std::vector<std::string>&, std::string);     //Funcion Simplificar simplifica p,q o r -> a = p,q o r; hay asignar el valor
-
+void DeMorgan(std::vector<std::string>&);
 /**
  * Taller computacional
  * @param argc cantidad de argumentos
  * @param argv argumentos
- * @return El código de salida del programa
+ * @return El cï¿½digo de salida del programa
 */
 
 int main(int argc, char** argv) {
@@ -32,27 +31,24 @@ int main(int argc, char** argv) {
     for(int i=0;i<argList.size();i++){
         std::cout<<argList[i];
     }
-    std::cout<<std::endl;
+    DeMorgan(argList);
     Simplificar(argList, a);
+    std::cout<<std::endl;
     std::cout << std::endl << "=== Modificada ===" << std::endl;
     for(int i=0;i<argList.size();i++){
         std::cout<<argList[i];
     }
-    Simplificar(argList, a); //PROBAR CON main ( ~ p ^&^& ~ p ) ( ~ p ^|^| ~ p ) ( p ^&^& p ) ( p ^|^| p ) ( ~ p ^&^& p ) ( p ^&^& ~ p ) ( ~ p ^|^| p ) ( p ^|^| ~ p )
-    std::cout << std::endl << "=== Modificada 2DA VEZ ===" << std::endl; //ahí estan todas la validaciones que hice
-    for(int i=0;i<argList.size();i++){
-        std::cout<<argList[i];
-    }
-    std::cout << std::endl
     system("Pause");
+    std::cout << std::endl
+    Simplificar(argList, a); //PROBAR CON main ( ~ p ^&^& ~ p ) ( ~ p ^|^| ~ p ) ( p ^&^& p ) ( p ^|^| p ) ( ~ p ^&^& p ) ( p ^&^& ~ p ) ( ~ p ^|^| p ) ( p ^|^| ~ p )
     return EXIT_SUCCESS;
 }
 
 void participantes() {
     std::cout << std::endl << "=== Taller 01 ===" << std::endl;
-    std::cout << std::endl << "Braulio Argandoña";
+    std::cout << std::endl << "Braulio Argandoï¿½a";
     std::cout << std::endl << "Fanny Rivero";
-    std::cout << std::endl << "Jennifer Portiño" << std::endl;
+    std::cout << std::endl << "Jennifer Portiï¿½o" << std::endl;
 }
 
 void Simplificar(std::vector<std::string> &argList, std::string a){
@@ -235,3 +231,53 @@ void Simplificar(std::vector<std::string> &argList, std::string a){
         }
     }
 }
+
+void DeMorgan(std::vector<std::string> &argList){
+    std::vector<std::string> aux;
+
+    for(int i=0;i<argList.size();i++){ //Recorre argList
+        if(std::string(argList[i])=="~" && std::string(argList[i+5])!= std::string(argList[i+2])){ //Busca la condicion DeMorgan ~(p&&q)
+                if(std::string(argList[i+1])=="("){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
+                    aux = argList;
+                    aux[i] = "(";
+                    aux[i+1]= "~";
+                    argList=aux;
+                    aux.clear();
+                    for(int j=0;j<argList.size();i++){
+                            if(std::string(argList[j])=="&"){
+                                aux[j]= "|";
+                            }
+                            if(std::string(argList[j])=="|"){
+                                aux[j]= "&";
+                            }
+                            else{
+                                aux[j]=argList[j];
+                            }
+
+                    }
+                        /**if(std::string(argList[i+3]) == "&"){
+                            std::cout << std::endl << "=== Cambio logico ===" << std::endl;
+                            aux = argList;
+                            aux[i+3] = "|";
+                            aux[i+4] = "|";
+                            argList=aux;
+                            aux.clear();
+                        }
+                        if(std::string(argList[i+3]) == "|"){
+                            aux = argList;
+                            aux[i+3] = "&";
+                            aux[i+4] = "&";
+                            argList=aux;
+                            aux.clear();
+                        }**/
+                }
+                if(std::string(argList[i+1])=="["){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
+                    aux = argList;
+                    aux[i] = "[";
+                    aux[i+1]="~";
+                    argList=aux;
+                    aux.clear();
+                }
+            }
+        }
+    }
