@@ -302,7 +302,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
                                     aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
                                     aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
@@ -319,7 +318,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
                                     aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");
                                     aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
@@ -378,7 +376,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
                                     aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
                                     aux.push_back(dos[0]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
@@ -393,7 +390,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     }
                                     aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back(")");aux.push_back("&&");
                                     aux.push_back("(");aux.push_back(tres[0]);aux.push_back("||");aux.push_back(dos[0]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
@@ -403,7 +399,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     }
                                 }
                             }
-
                         }
                     }else{ //[(~ ||
                         uno.push_back(argList[c-2]);
@@ -537,7 +532,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
                                     aux.push_back("(");aux.push_back(dos[0]);aux.push_back("||");
                                     aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
@@ -553,7 +547,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     aux.push_back(uno[0]);aux.push_back(uno[1]);aux.push_back("||");
                                     aux.push_back("(");aux.push_back(dos[0]);aux.push_back("||");
                                     aux.push_back(tres[0]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
@@ -621,7 +614,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     aux.push_back(uno[0]);aux.push_back(")");aux.push_back("&&");
                                     aux.push_back("(");aux.push_back(tres[0]);aux.push_back(tres[1]);aux.push_back("||");
                                     aux.push_back(dos[0]);aux.push_back(dos[1]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
@@ -781,7 +773,6 @@ void Asociativa(std::vector<std::string> &argList){
                                     }
                                     aux.push_back(uno[0]);aux.push_back("||");aux.push_back("(");aux.push_back(dos[0]);aux.push_back(dos[1]);
                                     aux.push_back("||");aux.push_back(tres[0]);aux.push_back(")");
-
                                     for(int k=c+3;k<argList.size();k++){
                                         aux.push_back(argList[k]);
                                     }
