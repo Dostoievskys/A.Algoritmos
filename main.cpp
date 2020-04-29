@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include<stdlib.h>
 #include<stdio.h>
-#include <string.h>
+#include <string>
 #include <vector>
 
 void participantes();//Funci�n que muestra los participantes del grupo
@@ -101,47 +101,46 @@ void DeMorgan(std::vector<std::string> &argList){
     std::vector<std::string> aux;
 
     for(int i=0;i<argList.size();i++){ //Recorre argList
-        if(std::string(argList[i])=="~" && std::string(argList[i+5])!= std::string(argList[i+2])){ //Busca la condicion DeMorgan ~(p&&q)
+        if(std::string(argList[i])=="~" ){ //Busca la negacion
                 if(std::string(argList[i+1])=="("){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
                     aux = argList;
                     aux[i] = "(";
                     aux[i+1]= "~";
                     argList=aux;
-                    aux.clear();
-                    for(int j=0;j<argList.size();i++){
-                            if(std::string(argList[j])=="&"){
-                                aux[j]= "|";
+                    for(int j=i;j<aux.size();j++){
+                            if(std::string(aux[j])=="&"){
+                                argList[j]= "|";
+                                if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
+                                    argList.insert(argList.begin()+j+1,"~");
+                                }
                             }
-                            if(std::string(argList[j])=="|"){
-                                aux[j]= "&";
+                            if(std::string(aux[j])=="|"){
+                                argList[j]= "&";
+                                if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
+                                    argList.insert(argList.begin()+j+1,"~");
+                                }
                             }
-                            else{
-                                aux[j]=argList[j];
-                            }
-
                     }
-                        /**if(std::string(argList[i+3]) == "&"){
-                            std::cout << std::endl << "=== Cambio logico ===" << std::endl;
-                            aux = argList;
-                            aux[i+3] = "|";
-                            aux[i+4] = "|";
-                            argList=aux;
-                            aux.clear();
-                        }
-                        if(std::string(argList[i+3]) == "|"){
-                            aux = argList;
-                            aux[i+3] = "&";
-                            aux[i+4] = "&";
-                            argList=aux;
-                            aux.clear();
-                        }**/
                 }
                 if(std::string(argList[i+1])=="["){ //Pregunta si hay un parentesis despues de la negacion y hace un intercambio
                     aux = argList;
                     aux[i] = "[";
                     aux[i+1]="~";
                     argList=aux;
-                    aux.clear();
+                    for(int j=i;j<aux.size();j++){
+                            if(std::string(aux[j])=="&"){
+                                argList[j]= "|";
+                                if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
+                                    argList.insert(argList.begin()+j+1,"~");
+                                }
+                            }
+                            if(std::string(aux[j])=="|"){
+                                argList[j]= "&";
+                                if(std::string(aux[j+1])=="p" || std::string(argList[j+1])=="q" || std::string(argList[j+1])=="r"){
+                                    argList.insert(argList.begin()+j+1,"~");
+                                }
+                            }
+                    }
                 }
             }
         }
