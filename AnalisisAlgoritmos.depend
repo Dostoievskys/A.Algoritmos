@@ -7,11 +7,19 @@
 	<string.h>
 	<iostream>
 
+<<<<<<< HEAD
 1587962798 source:e:\explorador de archivos\documentos\2.mis programas\a.algoritmos\main.cpp
+=======
+1588150610 source:e:\explorador de archivos\documentos\2.mis programas\a.algoritmos\main.cpp
+>>>>>>> Jen
 	<iostream>
 	<cstdlib>
 	<stdlib.h>
 	<stdio.h>
+<<<<<<< HEAD
 	<string.h>
+=======
+	<string>
+>>>>>>> Jen
 	<vector>
 
