@@ -16,22 +16,14 @@ void Implicancia(std::vector<std::string>&);
 
 int main(int argc, char** argv) {
     std::vector<std::string> argList;  // Aqui se almacena lo de argv y aqui voy modificando
-    std::string a="p"; // Variable para comparar en idempotencia, fue de ejemplo
-    if (argc > 1) {
+    if(argc > 1){
         for(int i=1;i<argc;i++){
             argList.push_back(argv[i]);     //Agrego uno por uno lo recibido por consola ignorando el argv[0] que es el nombre del programa
         }
     }
-    else {
-        // Mostrar los integrantes
-        participantes();
-        }
-
-    Implicancia (argList);
-    std::cout << std::endl << "=== Modificacion 3 ===" << std::endl; //Imprimo lo modificado post idempotencia
-    for(int i=0;i<argList.size();i++){
-        std::cout<<argList[i]<<" Posicion: "<<i<<std::endl;
-        }
+    else{
+        participantes();// Mostrar los integrantes}
+    }
     return EXIT_SUCCESS;
 }
 
@@ -41,9 +33,8 @@ void participantes() {
     std::cout << std::endl << "Fanny Rivero";
     std::cout << std::endl << "Jennifer Porti�o" << std::endl;
 }
-void Implicancia(std::vector<std::string> &argList)
-{
 
+void Implicancia(std::vector<std::string> &argList){
     std::vector<std::string> aux;
     std::string letra1;
     std::string letra2;
