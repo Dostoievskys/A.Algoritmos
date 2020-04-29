@@ -8,6 +8,7 @@
 void participantes();//Funci�n que muestra los participantes del grupo
 void Simplificar(std::vector<std::string>&, std::string);     //Funcion Simplificar simplifica p,q o r -> a = p,q o r; hay asignar el valor
 void DeMorgan(std::vector<std::string>&);
+void Asociativa(std::vector<std::string>&);
 /**
  * Taller computacional
  * @param argc cantidad de argumentos
@@ -26,6 +27,12 @@ int main(int argc, char** argv) {
     else {
         // Mostrar los integrantes
         participantes();
+        }
+
+    Asociativa (argList);
+    std::cout << std::endl << "=== Modificada ===" << std::endl; //Imprimo lo modificado post idempotencia
+    for(int i=0;i<argList.size();i++){
+        std::cout<<argList[i]<<" Posicion: "<<i<<std::endl;
     }
     std::cout << std::endl << "=== Original ===" << std::endl;  //Imprimo lo ingresado inicialmente
     for(int i=0;i<argList.size();i++){
@@ -50,6 +57,8 @@ void participantes() {
     std::cout << std::endl << "Fanny Rivero";
     std::cout << std::endl << "Jennifer Porti�o" << std::endl;
 }
+void Asociativa(std::vector<std::string> &argList)
+{
 
 void Simplificar(std::vector<std::string> &argList, std::string a){
     std::vector<std::string> aux;
@@ -281,3 +290,465 @@ void DeMorgan(std::vector<std::string> &argList){
             }
         }
     }
+
+    std::vector<std::string> aux;
+    for(int i=0;i<argList.size();i++)
+    { //Recorre argList
+        if(std::string(argList[i])== "["){ //Busca el corchete
+            int c=i+1;
+            if (std::string(argList[c]) == "("){
+                c+=1;
+                if (std::string(argList[c]) == "p" ){
+                    c+=1;
+                    if (std::string(argList[c]) == "&&"){
+                        c+=1;
+                        if (std::string(argList[c]) == "q"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "&&"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "r"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" p");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" (");
+                                        aux.push_back(" q");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" r");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (std::string(argList[c]) == "r"){
+                        c+=1;
+                        if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "&&"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "q"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]")
+                                        {
+                                                for(int j= 0; j<=i; j++)
+                                                {
+                                                    aux.push_back(argList[j]);
+                                                }
+                                                aux.push_back(" [");
+                                                aux.push_back(" p");
+                                                aux.push_back(" &&");
+                                                aux.push_back(" (");
+                                                aux.push_back(" r");
+                                                aux.push_back(" &&");
+                                                aux.push_back(" q");
+                                                aux.push_back(" )");
+                                                aux.push_back(" ]");
+                                                int q=0;
+                                                c+=1;
+                                                for(int q=c; q<argList.size(); q++){
+                                                    aux.push_back(argList[q]);
+                                                }
+                                                argList=aux;
+                                                aux.clear();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            if (std::string(argList[c]) == "q" )
+            {
+                    c+=1;
+                    if (std::string(argList[c]) == "&&"){
+                        c+=1;
+                        if (std::string(argList[c]) == "p"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "&&"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "r"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" q");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" (");
+                                        aux.push_back(" p");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" r");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    }
+                    if (std::string(argList[c]) == "r"){
+                        c+=1;
+                        if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "&&"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "p"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" q");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" (");
+                                        aux.push_back(" r");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" p");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                    }
+                                }
+                            }
+                        }
+                    }
+               }
+            if (std::string(argList[c]) == "r" ){
+                c=c+1;
+                if (std::string(argList[c]) == "&&"){
+                        c+=1;
+                        if (std::string(argList[c]) == "p"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "&&"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "q"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" r");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" (");
+                                        aux.push_back(" p");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" q");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    if (std::string(argList[c]) == "q"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "&&"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "p"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" r");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" (");
+                                        aux.push_back(" q");
+                                        aux.push_back(" &&");
+                                        aux.push_back(" p");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            if (std::string(argList[c]) == "p" ){
+                    c+=1;
+                    if (std::string(argList[c]) == "||"){
+                        c+=1;
+                        if (std::string(argList[c]) == "q"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "||"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "r"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" p");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" (");
+                                        aux.push_back(" q");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" r");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    if (std::string(argList[c]) == "r"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "||"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "q"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" p");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" (");
+                                        aux.push_back(" r");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" q");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                 if (std::string(argList[c]) == "q" ){
+                    c+=1;
+                    if (std::string(argList[c]) == "||"){
+                        c+=1;
+                        if (std::string(argList[c]) == "p"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "||"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "r"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" q");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" (");
+                                        aux.push_back(" p");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" r");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (std::string(argList[c]) == "r"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "||"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "p"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" q");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" (");
+                                        aux.push_back(" r");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" p");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (std::string(argList[c]) == "r" ){
+                    c+=1;
+                    if (std::string(argList[c]) == "||"){
+                        c+=1;
+                        if (std::string(argList[c]) == "p"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "||"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "q"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" r");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" (");
+                                        aux.push_back(" p");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" q");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                }
+                            }
+                        if (std::string(argList[c]) == "||"){
+                        c+=1;
+                        if (std::string(argList[c]) == "q"){
+                            c+=1;
+                            if (std::string(argList[c]) == ")"){
+                                c+=1;
+                                if (std::string(argList[c]) == "||"){
+                                    c+=1;
+                                    if (std::string(argList[c]) == "p"){
+                                        c+=1;
+                                        if (std::string(argList[c]) == "]"){
+                                        for(int j= 0; j<=i; j++)
+                                        {
+                                            aux.push_back(argList[j]);              //Agrega todo lo anterior a estructura al aux
+                                        }
+                                        aux.push_back(" [");
+                                        aux.push_back(" r");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" (");
+                                        aux.push_back(" q");
+                                        aux.push_back(" ||");
+                                        aux.push_back(" p");
+                                        aux.push_back(" )");
+                                        aux.push_back(" ]");
+                                        int q=0;
+                                        c+=1;
+                                        for(int q=c; q<argList.size(); q++){
+                                            aux.push_back(argList[q]);
+                                            }
+                                        argList=aux;
+                                        aux.clear();
+                                        }
+                                    }
+                                    }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
