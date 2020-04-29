@@ -8,6 +8,8 @@
 void participantes();//Funci�n que muestra los participantes del grupo
 void Idempotencia(std::vector<std::string>&, std::string);     //Funcion Idempotencia simplifica p,q o r -> a = p,q o r; hay asignar el valor
 void DeMorgan(std::vector<std::string>&);
+void Conmutativa(std::vector<std::string>&);
+
 /**
  * Taller computacional
  * @param argc cantidad de argumentos
@@ -26,8 +28,9 @@ int main(int argc, char** argv) {
         for(int i=0;i<argList.size();i++){
             std::cout<<argList[i]<<" Posicion: "<<i<<std::endl;}
         //Llamado de funciones
-        DeMorgan(argList);
-        Idempotencia(argList, a); //Maravillosa funcion; a puede ser "q", "p" o "r" como str no usar char
+        //DeMorgan(argList);
+        //Idempotencia(argList, a); //Maravillosa funcion; a puede ser "q", "p" o "r" como str no usar char
+        Conmutativa(argList);
 
         std::cout << std::endl << "=== Modificada ===" << std::endl; //Imprimo lo modificado post idempotencia
         for(int i=0;i<argList.size();i++){
@@ -146,3 +149,37 @@ void DeMorgan(std::vector<std::string> &argList){
             }
         }
     }
+
+void Conmutativa(std::vector<std::string> &argList){
+    std::vector<std::string> aux;
+
+    for(int i=0;i<argList.size();i++){
+        if(std::string(argList[i])=="p"){
+            if(i+3 < argList.size()){
+                aux=argList;
+                aux[i] = aux[i+3];
+                aux[i+3]= "p";
+                argList=aux;
+                aux.clear();
+            }
+        }
+        if(std::string(argList[i])=="q"){
+            if(i+3 < argList.size()){
+                aux=argList;
+                aux[i] = argList[i+3];
+                aux[i+3]= "q";
+                argList=aux;
+                aux.clear();
+            }
+        }
+        if(std::string(argList[i])=="r"){
+            if(i+3 < argList.size()){
+                aux=argList;
+                aux[i] = argList[i+3];
+                aux[i+3]= "r";
+                argList=aux;
+                aux.clear();
+            }
+        }
+    }
+}
